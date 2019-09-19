@@ -1,0 +1,244 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node
+{
+	int data;
+	struct node *prev,*next;
+}*start;
+typedef struct node NODE;
+
+void creation();
+void display();
+void insert_beg(int item);
+void insert_after(int item,int KEY);
+void insert_before(int item,int KEY);
+void delete_beg();
+void delete_end();
+void delete_spec(int KEY);
+
+int main()
+{
+	start=NULL;
+	int c,k,e,f,item,KEY;
+	creation();
+	display();
+	do
+	{
+		printf("\n1.Insertion\n2.Deletion\n");
+		scanf("%d",&c);
+		switch(c)
+		{
+			case 1:	printf("\nEnter the item to be added:");
+				scanf("%d",&item);
+				printf("\n1.At beginning\n2.At specified position\n");
+				scanf("%d",&k);
+				switch(k)
+				{
+					case 1: insert_beg(item);
+						break;
+					case 2: printf("\nEnter the key:");
+						scanf("%d",&KEY);
+						printf("\n1.After  2.Before");
+						scanf("%d",&f);
+						switch(f)
+						{
+							case 1:insert_after(item,KEY);
+								break;
+							case 2:insert_before(item,KEY);
+								break;
+							default:printf("\nInvalid Option!!!\n");
+						}
+						break;
+					default: printf("\nInvalid Option!!!\n");
+				}
+				display();
+				break;
+			case 2:
+				printf("\n1.At beginning\n2.At end\n3.At specified position\n");
+				scanf("%d",&k);
+				switch(k)
+				{
+					case 1: delete_beg();
+						break;
+					case 2: delete_end();
+						break;
+					case 3: printf("\nEnter the elemnt:");
+						scanf("%d",&KEY);
+						delete_spec(KEY);
+						break;
+					default: printf("\nInvalid Option!!!\n");
+				}
+				display();
+				break;
+			default: printf("\nInvalid Option!!!\n");
+		}
+		printf("\n1.Continue..... \n2.Exit....\n");
+		scanf("%d",&e);
+	}while(e==1);
+	return 0;
+}
+
+void creation()
+{
+	NODE *ptr,*cptr;
+	int n,i;
+	ptr=(NODE*)malloc(sizeof(NODE));
+	printf("Enter the number of elements:");
+	scanf("%d",&n);
+	if(n>=1)
+	{
+		printf("Enter the first element:");
+		scanf("%d",&ptr->data);
+		ptr->prev=NULL;
+		ptr->next=NULL;
+		start=ptr;
+		for(i=2;i<=n;i++)
+		{
+			cptr=(NODE*)malloc(sizeof(NODE));
+			printf("Enter the next element:");
+			scanf("%d",&cptr->data);
+			cptr->prev=ptr;
+			ptr->next=cptr;
+			cptr->next=NULL;
+			ptr=cptr;
+		}
+	}
+	else
+		printf("Memory cannot be alloted!!");
+}
+void display()
+{
+	NODE *p;
+	p=(NODE*)malloc(sizeof(NODE));
+	p=start;
+	while(p!=NULL)
+	{
+		printf("-> %d ",p->data);
+		p=p->next;
+	}
+}
+void insert_beg(int item)
+{
+	NODE *p;
+	p=(NODE*)malloc(sizeof(NODE));
+	p->data=item;
+	p->next=start;
+	p->prev=NULL;
+	start=p;
+}
+void insert_after(int item,int KEY)
+{
+	NODE *p,*loc;
+	p=(NODE*)malloc(sizeof(NODE));
+	p->data=item;
+	loc=start;
+	while(loc!=NULL)
+	{
+		if(loc->data==KEY)
+		{
+			
+			p->next=loc->next;
+			p->prev=loc;
+			(loc->next)->prev=p;
+			loc->next=p;
+			return;
+		}
+		loc=loc->next;
+	}
+	if(loc==NULL)
+		printf("\nInvalid position!!!\n");
+}
+void insert_before(int item,int KEY)
+{
+	NODE *p,*loc;
+	p=(NODE*)malloc(sizeof(NODE));
+	p->data=item;
+	loc=start;
+	while(loc!=NULL)
+	{
+		if(loc->data==KEY)
+		{
+			p->next=loc;
+			p->prev=loc->prev;
+			(loc->prev)->next=p;
+			loc->prev=p;
+		}
+		loc=loc->next;
+	}
+	if(loc==NULL)
+		printf("\nInvalid position!!!\n");
+}
+
+void delete_beg()
+{
+	NODE *p;
+	p=(NODE*)malloc(sizeof(NODE));
+	if(start==NULL)
+		printf("\nEmpty list!!!");
+	else if(start->next==NULL)	
+	{
+		start=NULL;
+		printf("\nNode deleted");
+	}
+	else
+	{
+		p=start;
+		start=p->next;
+		free(p);
+		printf("\nNode deleted");
+	}
+}
+		
+void delete_end()
+{
+	NODE *p;
+	if(start==NULL)
+		printf("\nEmpty list!!!");
+	else if(start->next==NULL)	
+	{
+		start=NULL;
+		printf("\nNode deleted");
+	}
+	else
+	{
+		p=start;
+		while(p->next!=NULL)
+			p=p->next;
+		(p->prev)->next=NULL;
+		free(p);
+		printf("\nNode deleted");
+	}
+}
+void delete_spec(int KEY)
+{
+	NODE *p,*loc;
+	p=start;
+	if(start==NULL)
+	{
+		printf("\nNull list\n");
+	}
+	else
+	{
+		while(p->next!=NULL && p->data!=KEY)
+		{
+			loc=p;
+			p=p->next;
+		}
+		if(p->next==NULL)
+			printf("\nInvalid position!!!\n");
+		else
+		{
+			loc->next=p->next;
+			(p->next)->prev=loc;
+			free(p);
+		}
+	}
+}
+
+
+
+
+	
+		
+		
